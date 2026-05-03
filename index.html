@@ -1370,7 +1370,7 @@
       display: none;
     }
 
-    .mode-desktop #app-contact {
+    #app-contact {
       display: none !important;
     }
 
@@ -1533,10 +1533,6 @@
       display: none;
     }
 
-    .mode-desktop #app-contact {
-      display: none !important;
-    }
-
     /* dt-main: col2 row2 — inline content panel */
     .dt-main {
       display: none;
@@ -1685,9 +1681,66 @@
       right: calc(50% + 370px);
     }
 
+    /* ── MOBILE PANEL SLOT ── */
+    @keyframes slotIn {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slotOut {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(20px); }
+    }
+
+    .mobile-panel-slot {
+      display: none;
+      flex-direction: column;
+      flex-shrink: 0;
+      width: calc(100% - 32px);
+      max-width: 460px;
+      background: #111;
+      border-radius: 24px;
+      border: 1px solid #1e1e1e;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 0.5px #1e1e1e;
+      margin: 20px auto 80px;
+    }
+
+    body.mobile-panel-open .mobile-panel-slot {
+      display: flex;
+      animation: slotIn 0.48s 0.12s cubic-bezier(0.34, 1.18, 0.64, 1) both;
+    }
+
+    .mobile-panel-slot.closing {
+      display: flex !important;
+      animation: slotOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+    }
+
+    .mobile-panel-slot .panel-body {
+      max-height: 65vh;
+      overflow-y: auto;
+    }
+
     /* ── RESPONSIVE — small screens: force phone mode, hide switcher ── */
-    @media(max-width:800px) {
+    @media(max-width:1040px) {
+      /* Always column layout — padding-top transitions for smooth phone movement */
+      .stage {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        padding-top: var(--phone-center-pt, 90px) !important;
+        transition: padding-top 0.55s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      }
+
+      body.mobile-panel-open .stage {
+        padding-top: 120px !important;
+      }
+
       .device-bar {
+        display: none !important;
+      }
+
+      /* hide floating panel — replaced by inline slot on mobile */
+      .panel-overlay {
         display: none !important;
       }
 
@@ -2019,6 +2072,9 @@
         </div>
       </div>
     </div>
+
+    <!-- mobile panel slot: shown below phone on narrow viewports -->
+    <div class="mobile-panel-slot" id="mobilePanelSlot"></div>
   </div>
 
   <!-- panel (outside phone) -->
@@ -2257,9 +2313,9 @@
         [spring.currentRz, spring.vRz] = springStep(spring.currentRz, spring.vRz, spring.targetRz, K_ROT, D_ROT);
       }
 
-      // panel slide X — direction-aware spring
+      // panel slide X — direction-aware spring (disabled on narrow viewports)
       let txTarget = 0;
-      if (isPanelOpen) {
+      if (isPanelOpen && window.innerWidth > 1040) {
         txTarget = panelSide === 'left' ? 100 : -100;
       }
       [spring.tx, spring.vtx] = springStep(spring.tx, spring.vtx, txTarget, K_POS * 0.9, D_POS);
@@ -2533,6 +2589,7 @@
 
     let activePanel = null;
     let activeSide = 'right';
+    let _closeSlotTimer = null;
 
     function openPanel(key) {
       const d = PANELS[key];
@@ -2546,6 +2603,28 @@
       if (isDesktopMode()) {
         if (activePanel === key) {
           closePanel();
+          return;
+        }
+        _doOpen(key, d, panel, title, body, icon);
+        return;
+      }
+
+      // mobile slot mode
+      if (window.innerWidth <= 1040) {
+        if (activePanel === key && document.body.classList.contains('mobile-panel-open')) {
+          closePanel();
+          return;
+        }
+        if (document.body.classList.contains('mobile-panel-open') && activePanel !== key) {
+          // Swap content in-place — no scroll bounce, no layout change
+          if (_closeSlotTimer) { clearTimeout(_closeSlotTimer); _closeSlotTimer = null; }
+          const slot = document.getElementById('mobilePanelSlot');
+          slot.classList.remove('closing');
+          document.querySelectorAll('.app.active').forEach(a => a.classList.remove('active'));
+          const appEl = document.getElementById('app-' + key);
+          if (appEl) appEl.classList.add('active');
+          activePanel = key;
+          _swapSlotContent(slot, d);
           return;
         }
         _doOpen(key, d, panel, title, body, icon);
@@ -2577,10 +2656,14 @@
       activePanel = key;
 
       if (isDesktopMode()) {
-        // inline content in dt-main — no floating panel, no phone movement
         _openDesktopInline(key, d);
-        isPanelOpen = false; // don't shift phone
+        isPanelOpen = false;
         panelSide = null;
+        return;
+      }
+
+      if (window.innerWidth <= 1040) {
+        _openMobileSlot(key, d);
         return;
       }
 
@@ -2602,6 +2685,68 @@
       requestAnimationFrame(() => requestAnimationFrame(() => {
         panel.classList.add('open');
       }));
+    }
+
+    function _buildSlotHeader(d) {
+      const hdr = document.createElement('div');
+      hdr.className = 'panel-header';
+      const titleRow = document.createElement('div');
+      titleRow.className = 'panel-title-row';
+      const ico = document.createElement('div');
+      ico.className = 'panel-icon ' + d.iconClass;
+      ico.innerHTML = d.icon;
+      const ttl = document.createElement('span');
+      ttl.className = 'panel-title';
+      ttl.textContent = d.title;
+      titleRow.appendChild(ico);
+      titleRow.appendChild(ttl);
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'close-btn';
+      closeBtn.textContent = '✕';
+      closeBtn.onclick = closePanel;
+      hdr.appendChild(titleRow);
+      hdr.appendChild(closeBtn);
+      return hdr;
+    }
+
+    function _fillSlot(slot, d) {
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'panel-body';
+      bodyEl.innerHTML = d.html;
+      slot.innerHTML = '';
+      slot.appendChild(_buildSlotHeader(d));
+      slot.appendChild(bodyEl);
+    }
+
+    function _swapSlotContent(slot, d) {
+      slot.style.opacity = '0.2';
+      slot.style.transition = 'opacity 0.12s ease';
+      setTimeout(() => {
+        _fillSlot(slot, d);
+        slot.style.transition = 'opacity 0.22s ease';
+        slot.style.opacity = '1';
+        setTimeout(() => { slot.style.opacity = ''; slot.style.transition = ''; }, 240);
+      }, 130);
+    }
+
+    function _openMobileSlot(key, d) {
+      const slot = document.getElementById('mobilePanelSlot');
+      if (!slot) return;
+      if (_closeSlotTimer) { clearTimeout(_closeSlotTimer); _closeSlotTimer = null; }
+      slot.classList.remove('closing');
+
+      _fillSlot(slot, d);
+      isPanelOpen = false;
+      panelSide = null;
+      document.body.classList.add('mobile-panel-open');
+
+      // Scroll so only bottom 25% of phone is visible — panel gets 75% of viewport
+      setTimeout(() => {
+        const wrap = document.getElementById('phoneWrap');
+        const wrapRect = wrap.getBoundingClientRect();
+        const target = window.scrollY + wrapRect.bottom - wrapRect.height * 0.25;
+        window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+      }, 180);
     }
 
     function _openDesktopInline(key, d) {
@@ -2647,6 +2792,19 @@
     }
 
     function closePanel() {
+      // mobile slot close — animate out, then reset layout
+      if (document.body.classList.contains('mobile-panel-open')) {
+        const slot = document.getElementById('mobilePanelSlot');
+        slot.classList.add('closing');
+        document.body.classList.remove('mobile-panel-open');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        _closeSlotTimer = setTimeout(() => {
+          slot.innerHTML = '';
+          slot.classList.remove('closing');
+          _closeSlotTimer = null;
+        }, 340);
+      }
+
       const panel = document.getElementById('panel');
       panel.classList.remove('open');
       isPanelOpen = false;
@@ -2665,6 +2823,8 @@
       panel.classList.remove('open');
       isPanelOpen = false; panelSide = null; activePanel = null;
       document.querySelectorAll('.app.active').forEach(a => a.classList.remove('active'));
+      document.getElementById('mobilePanelSlot').innerHTML = '';
+      document.body.classList.remove('mobile-panel-open');
       _clearDesktopInline();
 
       currentMode = mode;
@@ -2677,6 +2837,34 @@
       spring.targetTx = 0; spring.tx = 0; spring.vtx = 0;
 
     }
+
+    // Force phone mode when viewport <= 1040px
+    function enforcePhoneOnNarrow() {
+      if (window.innerWidth <= 1040 && currentMode !== 'phone') {
+        const phoneBtn = document.querySelector('.dv-btn[data-mode="phone"]');
+        switchDevice('phone', phoneBtn);
+      }
+    }
+    window.addEventListener('resize', enforcePhoneOnNarrow);
+    enforcePhoneOnNarrow();
+
+    // Set CSS variable so padding-top centers the phone when no panel is open
+    function updateStagePadding(suppressTransition) {
+      if (window.innerWidth > 1040) return;
+      const stage = document.getElementById('stage');
+      const wrap = document.getElementById('phoneWrap');
+      const pt = Math.max(90, Math.round((window.innerHeight - wrap.offsetHeight) / 2));
+      if (suppressTransition) {
+        stage.style.transition = 'none';
+        stage.style.setProperty('--phone-center-pt', pt + 'px');
+        requestAnimationFrame(() => requestAnimationFrame(() => { stage.style.transition = ''; }));
+      } else {
+        stage.style.setProperty('--phone-center-pt', pt + 'px');
+      }
+    }
+    // Set immediately (no transition) to avoid a visible re-center after page load
+    updateStagePadding(true);
+    window.addEventListener('resize', () => updateStagePadding(false));
 
     function openSheet(key) {
       const d = SHEETS[key];
