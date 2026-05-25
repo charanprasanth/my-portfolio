@@ -1681,6 +1681,34 @@
       right: calc(50% + 370px);
     }
 
+    /* ── SCROLL NAVBAR (frosted bar behind nameplate on scroll) ── */
+    .scroll-bar {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: rgba(10, 10, 10, 0.72);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 18;
+      opacity: 0;
+      transition: opacity 0.28s ease;
+      pointer-events: none;
+      border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .scroll-bar.visible {
+      opacity: 1;
+    }
+
+    @media (max-width: 1040px) {
+      .scroll-bar {
+        display: block;
+      }
+    }
+
     /* ── MOBILE PANEL SLOT ── */
     @keyframes slotIn {
       from { opacity: 0; transform: translateY(28px); }
@@ -1876,6 +1904,7 @@
 
 <body>
 
+  <div id="scrollBar" class="scroll-bar"></div>
   <canvas id="bgCanvas"></canvas>
 
   <!-- NAMEPLATE — outside device -->
@@ -2127,6 +2156,12 @@
       if (el) el.textContent = h + ':' + (m < 10 ? '0' + m : m);
     }
     tick(); setInterval(tick, 30000);
+
+    // ── SCROLL NAVBAR ──
+    const scrollBar = document.getElementById('scrollBar');
+    window.addEventListener('scroll', () => {
+      scrollBar.classList.toggle('visible', window.scrollY > 20);
+    }, { passive: true });
 
     // ── ICON POP ──
     document.querySelectorAll('.app').forEach((a, i) => {
@@ -2616,7 +2651,6 @@
           return;
         }
         if (document.body.classList.contains('mobile-panel-open') && activePanel !== key) {
-          // Swap content in-place — no scroll bounce, no layout change
           if (_closeSlotTimer) { clearTimeout(_closeSlotTimer); _closeSlotTimer = null; }
           const slot = document.getElementById('mobilePanelSlot');
           slot.classList.remove('closing');
@@ -2625,6 +2659,7 @@
           if (appEl) appEl.classList.add('active');
           activePanel = key;
           _swapSlotContent(slot, d);
+          setTimeout(_scrollPanelIntoCenter, 200);
           return;
         }
         _doOpen(key, d, panel, title, body, icon);
@@ -2740,13 +2775,20 @@
       panelSide = null;
       document.body.classList.add('mobile-panel-open');
 
-      // Scroll so only bottom 25% of phone is visible — panel gets 75% of viewport
-      setTimeout(() => {
-        const wrap = document.getElementById('phoneWrap');
-        const wrapRect = wrap.getBoundingClientRect();
-        const target = window.scrollY + wrapRect.bottom - wrapRect.height * 0.25;
-        window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
-      }, 180);
+      setTimeout(_scrollPanelIntoCenter, 200);
+    }
+
+    function _scrollPanelIntoCenter() {
+      const wrap = document.getElementById('phoneWrap');
+      const slot = document.getElementById('mobilePanelSlot');
+      if (!wrap || !slot) return;
+      // Use stable layout values — offsetHeight is unaffected by CSS transforms/animations.
+      // body.mobile-panel-open sets stage padding-top to 120px; phone wrap sits directly after.
+      const slotTop = 120 + wrap.offsetHeight + 20; // 20px = slot margin-top
+      const slotH = slot.scrollHeight || slot.offsetHeight || 300;
+      const viewH = window.innerHeight;
+      const target = slotTop + slotH / 2 - viewH / 2;
+      window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
     }
 
     function _openDesktopInline(key, d) {
