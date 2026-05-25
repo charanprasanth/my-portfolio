@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Charan Prasanth — Mobile Engineer</title>
+  <title>Charan Prasanth, Mobile Engineer</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -620,7 +620,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #666;
+      color: #fff;
       font-size: 13px;
       font-weight: 500;
       transition: background 0.2s, color 0.2s, transform 0.15s;
@@ -727,7 +727,7 @@
 
     .xp-bullet {
       font-size: 12px;
-      color: #777;
+      color: #aaa;
       line-height: 1.65;
       padding-left: 14px;
       position: relative;
@@ -810,7 +810,7 @@
 
     .proj-desc {
       font-size: 11px;
-      color: #666;
+      color: #aaa;
       line-height: 1.6;
       flex: 1;
     }
@@ -906,7 +906,7 @@
 
     .edu-deg {
       font-size: 12px;
-      color: #888;
+      color: #aaa;
     }
 
     .edu-meta {
@@ -939,7 +939,7 @@
 
     .cert-text {
       font-size: 12px;
-      color: #888;
+      color: #aaa;
       line-height: 1.5;
     }
 
@@ -974,7 +974,7 @@
 
     .award-sub {
       font-size: 11px;
-      color: #666;
+      color: #aaa;
       line-height: 1.5;
     }
 
@@ -1336,7 +1336,7 @@
       display: none;
     }
 
-    /* ── DESKTOP MODE — real OS window ── */
+    /* ── DESKTOP MODE - real OS window ── */
     .mode-desktop .phone {
       width: 780px;
       border-radius: 12px;
@@ -1365,7 +1365,7 @@
       position: absolute;
     }
 
-    /* nameplate always visible at top — no desktop override needed */
+    /* nameplate always visible at top - no desktop override needed */
     .mode-desktop .grid-spacer {
       display: none;
     }
@@ -1533,7 +1533,7 @@
       display: none;
     }
 
-    /* dt-main: col2 row2 — inline content panel */
+    /* dt-main: col2 row2 - inline content panel */
     .dt-main {
       display: none;
     }
@@ -1654,7 +1654,7 @@
       height: 15px !important;
     }
 
-    /* in desktop mode, hide the GH+LI dock items — they appear in sidebar nav */
+    /* in desktop mode, hide the GH+LI dock items - they appear in sidebar nav */
     .mode-desktop .dock .app[data-sheet] {
       display: none !important;
     }
@@ -1748,9 +1748,9 @@
       overflow-y: auto;
     }
 
-    /* ── RESPONSIVE — small screens: force phone mode, hide switcher ── */
+    /* ── RESPONSIVE - small screens: force phone mode, hide switcher ── */
     @media(max-width:1040px) {
-      /* Always column layout — padding-top transitions for smooth phone movement */
+      /* Always column layout - padding-top transitions for smooth phone movement */
       .stage {
         flex-direction: column !important;
         align-items: center !important;
@@ -1767,7 +1767,7 @@
         display: none !important;
       }
 
-      /* hide floating panel — replaced by inline slot on mobile */
+      /* hide floating panel - replaced by inline slot on mobile */
       .panel-overlay {
         display: none !important;
       }
@@ -1907,7 +1907,7 @@
   <div id="scrollBar" class="scroll-bar"></div>
   <canvas id="bgCanvas"></canvas>
 
-  <!-- NAMEPLATE — outside device -->
+  <!-- NAMEPLATE - outside device -->
   <div class="nameplate" id="nameplate">
     <img class="nameplate-pic" src="my-pic.jpeg" alt="Charan Prasanth" onerror="this.style.display='none'" />
     <div class="nameplate-text">
@@ -2248,7 +2248,7 @@
     const phoneWrap = document.getElementById('phoneWrap');
     const phoneEl = document.getElementById('phone');
 
-    // spring state — all values are what we're animating toward
+    // spring state - all values are what we're animating toward
     const spring = {
       // current values
       tx: 0, ty: 0, rx: 0, ry: 0,
@@ -2348,7 +2348,7 @@
         [spring.currentRz, spring.vRz] = springStep(spring.currentRz, spring.vRz, spring.targetRz, K_ROT, D_ROT);
       }
 
-      // panel slide X — direction-aware spring (disabled on narrow viewports)
+      // panel slide X - direction-aware spring (disabled on narrow viewports)
       let txTarget = 0;
       if (isPanelOpen && window.innerWidth > 1040) {
         txTarget = panelSide === 'left' ? 100 : -100;
@@ -2369,7 +2369,7 @@
     spring.currentRz = spring.entranceRz;
     motionLoop();
 
-    // nameplate is CSS-positioned at top:32px — no JS needed
+    // nameplate is CSS-positioned at top:32px - no JS needed
 
     // panel data
     const PANELS = {
@@ -2410,8 +2410,8 @@
   <div class="xp-top"><div class="xp-role">Software Engineer</div><div class="xp-date">Jan 2025 – Jul 2025</div></div>
   <div class="xp-loc">India · Remote</div>
   <div class="xp-bullet">Built Android & iOS apps using Flutter and Jetpack Compose.</div>
-  <div class="xp-bullet">Implemented Server-Driven UI for e-commerce — dynamic updates without app releases.</div>
-  <div class="xp-bullet">Built fintech onboarding with Decentro KYC — Digilocker, doc, bank & UPI verification.</div>
+  <div class="xp-bullet">Implemented Server-Driven UI for e-commerce - dynamic updates without app releases.</div>
+  <div class="xp-bullet">Built fintech onboarding with Decentro KYC - Digilocker, doc, bank & UPI verification.</div>
   <div class="xp-bullet">Integrated payment gateways for secure transactions and payout workflows.</div>
   <div class="xp-bullet">Implemented AppsFlyer deep linking for install attribution and engagement tracking.</div>
   <div class="xp-bullet">Mentored junior devs, conducted code reviews, resolved production issues.</div>
@@ -2460,13 +2460,13 @@
     </div>
     <div class="proj-name">Spectalix</div>
     <div class="proj-stack">Kotlin · FFMPEG · OpenGL · Jetpack Compose</div>
-    <div class="proj-desc">White-label UGC video SDK — overlays, filters, watermarks, color grading on-device.</div>
+    <div class="proj-desc">White-label UGC video SDK - overlays, filters, watermarks, color grading on-device.</div>
   </div>
   <div class="proj-card">
     <div class="proj-app-icon" style="background:linear-gradient(145deg,#0f4c81,#1a6fc4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;letter-spacing:-0.5px;">FF</div>
     <div class="proj-name">FeatureFlagSDK</div>
     <div class="proj-stack">Flutter · Dart</div>
-    <div class="proj-desc">SDK for runtime feature flag management — A/B testing, remote config, controlled rollouts.</div>
+    <div class="proj-desc">SDK for runtime feature flag management - A/B testing, remote config, controlled rollouts.</div>
     <a href="https://tinkers.dev/featureflags/" target="_blank" class="proj-link">tinkers.dev ↗</a>
   </div>
   <div class="proj-card">
@@ -2475,7 +2475,7 @@
     </div>
     <div class="proj-name">iQi</div>
     <div class="proj-stack">Kotlin · Java · Tuya SDK · BLE · WiFi</div>
-    <div class="proj-desc">IoT Android app — multi-mode device pairing via AP, WiFi, BT & BLE for air quality monitoring.</div>
+    <div class="proj-desc">IoT Android app - multi-mode device pairing via AP, WiFi, BT & BLE for air quality monitoring.</div>
   </div>
   <div class="proj-card">
     <div class="proj-app-icon" style="background:linear-gradient(145deg,#0c4a6e,#0284c7)">
@@ -2483,7 +2483,7 @@
     </div>
     <div class="proj-name">Swiftify</div>
     <div class="proj-stack">Flutter · Dart · pub.dev</div>
-    <div class="proj-desc">Open-source Flutter package — SwiftUI-like declarative modifiers. Contributed to v1.1.0 & v1.3.0.</div>
+    <div class="proj-desc">Open-source Flutter package - SwiftUI-like declarative modifiers. Contributed to v1.1.0 & v1.3.0.</div>
     <a href="https://pub.dev/packages/swiftify" target="_blank" class="proj-link">pub.dev ↗</a>
   </div>
 </div>`
@@ -2545,12 +2545,12 @@
         iconClass: 'ic-cert',
         icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>`,
         html: `
-<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">Java (Basic) — HackerRank</div></div>
-<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">SQL (Basic) — HackerRank</div></div>
-<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">MTA: Introduction to Programming Using Java — Microsoft (2020)</div></div>
-<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">Developing AI Applications with Python and Flask — IBM</div></div>
-<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">Application Development using Microservices and Serverless — IBM</div></div>
-<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">Google AI Essentials — Google</div></div>`
+<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">Java (Basic) - HackerRank</div></div>
+<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">SQL (Basic) - HackerRank</div></div>
+<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">MTA: Introduction to Programming Using Java - Microsoft (2020)</div></div>
+<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">Developing AI Applications with Python and Flask - IBM</div></div>
+<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">Application Development using Microservices and Serverless - IBM</div></div>
+<div class="cert-item"><div class="cert-dot"></div><div class="cert-text">Google AI Essentials - Google</div></div>`
       },
       awards: {
         title: 'Honors & Awards',
@@ -2562,7 +2562,7 @@
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
   </div>
   <div>
-    <div class="award-title">Guest Lecturer — Flutter Development</div>
+    <div class="award-title">Guest Lecturer, Flutter Development</div>
     <div class="award-sub">Invited to lecture on Flutter development at PSG College of Arts and Science, India.</div>
   </div>
 </div>
@@ -2619,7 +2619,7 @@
       }
     };
 
-    // alternating direction — starts right, flips each new open
+    // alternating direction - starts right, flips each new open
     let nextSide = 'right';
 
     let activePanel = null;
@@ -2670,7 +2670,7 @@
       // same key = close (no direction change)
       if (activePanel === key && panel.classList.contains('open')) { closePanel(); return; }
 
-      // switching panel while one is open — close, then open new one
+      // switching panel while one is open - close, then open new one
       if (panel.classList.contains('open') && activePanel !== key) {
         panel.classList.remove('open');
         isPanelOpen = false;
@@ -2782,7 +2782,7 @@
       const wrap = document.getElementById('phoneWrap');
       const slot = document.getElementById('mobilePanelSlot');
       if (!wrap || !slot) return;
-      // Use stable layout values — offsetHeight is unaffected by CSS transforms/animations.
+      // Use stable layout values - offsetHeight is unaffected by CSS transforms/animations.
       // body.mobile-panel-open sets stage padding-top to 120px; phone wrap sits directly after.
       const slotTop = 120 + wrap.offsetHeight + 20; // 20px = slot margin-top
       const slotH = slot.scrollHeight || slot.offsetHeight || 300;
@@ -2834,7 +2834,7 @@
     }
 
     function closePanel() {
-      // mobile slot close — animate out, then reset layout
+      // mobile slot close - animate out, then reset layout
       if (document.body.classList.contains('mobile-panel-open')) {
         const slot = document.getElementById('mobilePanelSlot');
         slot.classList.add('closing');
@@ -2952,7 +2952,7 @@
     document.querySelectorAll('.app[data-sheet]').forEach(el => {
       el.addEventListener('click', function (e) {
         e.stopPropagation();
-        // desktop-only-nav items are handled separately — skip here
+        // desktop-only-nav items are handled separately - skip here
         if (this.classList.contains('desktop-only-nav')) return;
         const key = this.getAttribute('data-sheet');
         const icon = this.querySelector('.app-icon');
